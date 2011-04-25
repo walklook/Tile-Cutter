@@ -177,7 +177,10 @@
 - (void)updateProgress
 {
     if (progressRow >= tileRowCount)
+	{
+		[self.allTilesInfo writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
         [NSApp endSheet:progressWindow];
+	}
     
 //    [rowBar setDoubleValue:(double)progressRow];
 //    [columnBar setDoubleValue:(double)progressCol];
