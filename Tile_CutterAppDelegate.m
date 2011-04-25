@@ -28,6 +28,7 @@
 @implementation Tile_CutterAppDelegate
 
 @synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename, queue;
+@synthesize allTilesInfo;
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
 {
@@ -78,6 +79,8 @@
     
     tileRowCount = [image rowsWithTileHeight:tileHeight];
     tileColCount = [image columnsWithTileWidth:tileWidth];
+	
+	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     TileCutterOutputPrefs outputFormat = (TileCutterOutputPrefs)[defaults integerForKey:@"OutputFormat"];
@@ -161,6 +164,7 @@
 }
 - (void)dealloc
 {
+	self.allTilesInfo = nil;
     [columnBar release], columnBar = nil;
     [rowBar release], rowBar = nil;
     [progressWindow release], progressWindow = nil;
@@ -195,6 +199,8 @@
 //    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", progressRow, progressCol]];
     
     [self performSelectorOnMainThread:@selector(updateProgress) withObject:nil waitUntilDone:NO];
+	
+	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
 }
 - (void)delayAlert:(NSString *)message
 {

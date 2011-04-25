@@ -25,6 +25,8 @@
 @property (retain) IBOutlet NSString *baseFilename;
 @property (nonatomic, retain) NSOperationQueue *queue;
 
+@property(readwrite, retain) NSArray *allTilesInfo;
+
 - (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)openSelected:(id)sender;
 @end
