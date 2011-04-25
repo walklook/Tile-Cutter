@@ -20,7 +20,7 @@
 
 @interface TileOperation : NSOperation 
 {
-
+	
 }
 @property (assign) NSObject <TileOperationDelegate> *delegate;
 @property (retain) NSBitmapImageRep *imageRep;
@@ -29,4 +29,13 @@
 @property NSUInteger tileHeight;
 @property NSUInteger tileWidth;
 @property TileCutterOutputPrefs outputFormat;
+
+/* array of tiles info, 
+ * each item = NSDictionary {
+ *    NSString *name - output filename of tile
+ *    NSString from CGRect of that tile in source Image
+ */
+@property (readwrite, retain)NSMutableArray *tilesInfo;
+
+
 @end

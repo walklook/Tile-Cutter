@@ -13,6 +13,7 @@
 
 @implementation TileOperation
 @synthesize delegate, imageRep, row, baseFilename, tileHeight, tileWidth, outputFormat;
+@synthesize tilesInfo;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {
@@ -65,9 +66,14 @@
                 extension = @"jpg";
                 fileType = NSJPEGFileType;
                 break;
-        }
+        }		
         
+		// Get Tile Count for this Operation
 		int tileColCount = [imageRep columnsWithTileWidth:tileWidth];
+		
+		// Create tilesInfo Array for holding this Operation Tiles Info
+		self.tilesInfo = [NSMutableArray arrayWithCapacity: tileColCount];
+		
         for (int column = 0; column < tileColCount; column++)
         {
             NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth tileHeight:(float)tileHeight column:column row:row];
@@ -98,6 +104,17 @@
             
             NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d.%@", baseFilename, row, column, extension];
             [bitmapData writeToFile:outPath atomically:YES];
+			
+			// Add created Tile Info to tilesInfo array
+			NSRect tileRect = NSRectFromCGRect( CGRectMake(column * tileWidth, 
+														   row * tileHeight, 
+														   tileWidth, 
+														   tileHeight));
+			NSDictionary *tileInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:
+										  [outPath lastPathComponent], @"Name",
+										  NSStringFromRect(tileRect), @"Rect",
+										  nil];
+			[(NSMutableArray *)self.tilesInfo addObject: tileInfoDict ];
             
             if ([delegate respondsToSelector:@selector(operationDidFinishTile:)])
                 [delegate performSelectorOnMainThread:@selector(operationDidFinishTile:) 
@@ -124,6 +141,7 @@
     delegate = nil;
     [imageRep release], imageRep = nil;
     [baseFilename release], baseFilename = nil;
+	self.tilesInfo = nil;
     
     [super dealloc];
 }
