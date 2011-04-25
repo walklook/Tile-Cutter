@@ -202,9 +202,14 @@
 //    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", progressRow, progressCol]];
     
     [self performSelectorOnMainThread:@selector(updateProgress) withObject:nil waitUntilDone:NO];
-	
-	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
 }
+
+- (void)operationDidFinishSuccessfully:(TileOperation *)op
+{
+	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
+	op.tilesInfo = nil;
+}
+
 - (void)delayAlert:(NSString *)message
 {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
