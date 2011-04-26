@@ -11,6 +11,35 @@
 #import "NSInvocation-MCUtilities.h"
 #import "NSBitmapImageRep-Tile.h"
 
+@interface NSBitmapImageRep (Extension)
+
+- (BOOL) isAbsoluteTransparent;
+
+@end
+
+@implementation NSBitmapImageRep (Extension)
+
+- (BOOL) isAbsoluteTransparent
+{	
+	NSSize s = [self size];
+	
+	for (int i = 0; i < s.width; ++i)
+	{
+		for (int j = 0; j < s.height; ++j)
+		{
+			NSColor *col = [self colorAtX:i y:j];
+			
+			if ([col alphaComponent] != 0.0f)
+				return NO;
+		}
+	}
+	
+	return YES;
+}
+
+@end
+
+
 @implementation TileOperation
 @synthesize delegate, imageRep, row, baseFilename, tileHeight, tileWidth, outputFormat;
 @synthesize tilesInfo;
