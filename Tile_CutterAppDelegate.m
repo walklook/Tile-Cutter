@@ -96,7 +96,10 @@
         op.baseFilename = baseFilename;
         op.delegate = self;
         op.outputFormat = outputFormat;
-		op.skipTransparentTiles = ( [tileCutterView.skipCheckbox intValue] != 0 ) ? YES : NO;
+		if (![tileCutterView.skipCheckbox intValue]) 
+			op.skipTransparentTiles = NO;
+		else 
+			op.skipTransparentTiles = YES;
         [queue addOperation:op];
         [op release];
     }
