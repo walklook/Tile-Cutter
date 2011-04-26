@@ -114,37 +114,50 @@
                 goto finish;
             }
             
-            NSArray * representations = [subImage representations];
-            
-            if ([self isCancelled])
-                goto finish;
-            
-            NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
-                                                                          usingType:fileType properties:nil];
-            
-            if (bitmapData == nil)
-            {
-                [self informDelegateOfError:NSLocalizedString(@"Error retrieving bitmap data from result", @"")];
-                goto finish;
-            }
-            
-            
-            if ([self isCancelled])
-                goto finish;
-            
-            NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d.%@", baseFilename, row, column, extension];
-            [bitmapData writeToFile:outPath atomically:YES];
+            NSArray * representations = [subImage representations];			
+            NSBitmapImageRep *subBitmapRep = nil;
+			if ( [representations count] )
+				subBitmapRep = [representations objectAtIndex: 0];
 			
-			// Add created Tile Info to tilesInfo array
-			NSRect tileRect = NSRectFromCGRect( CGRectMake(column * tileWidth, 
-														   row * tileHeight, 
-														   [subImage size].width, 
-														   [subImage size].height));
-			NSDictionary *tileInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:
-										  [outPath lastPathComponent], @"Name",
-										  NSStringFromRect(tileRect), @"Rect",
-										  nil];
-			[(NSMutableArray *)self.tilesInfo addObject: tileInfoDict ];
+            if ([self isCancelled])
+                goto finish;
+            
+			
+			
+			// Analyze do we need this tile saved
+			BOOL curTileNeeded = ! (self.skipTransparentTiles && [subBitmapRep isAbsoluteTransparent]);
+			
+			// save if yes
+			if ( curTileNeeded )
+			{			
+				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
+																			  usingType:fileType properties:nil];
+				
+				
+				if (bitmapData == nil)
+				{
+					[self informDelegateOfError:NSLocalizedString(@"Error retrieving bitmap data from result", @"")];
+					goto finish;
+				}
+				
+				
+				if ([self isCancelled])
+					goto finish;
+				
+				NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d.%@", baseFilename, row, column, extension];
+				[bitmapData writeToFile:outPath atomically:YES];
+				
+				// Add created Tile Info to tilesInfo array
+				NSRect tileRect = NSRectFromCGRect( CGRectMake(column * tileWidth, 
+															   row * tileHeight, 
+															   [subImage size].width, 
+															   [subImage size].height));
+				NSDictionary *tileInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:
+											  [outPath lastPathComponent], @"Name",
+											  NSStringFromRect(tileRect), @"Rect",
+											  nil];
+				[(NSMutableArray *)self.tilesInfo addObject: tileInfoDict ];
+			}
             
             if ([delegate respondsToSelector:@selector(operationDidFinishTile:)])
                 [delegate performSelectorOnMainThread:@selector(operationDidFinishTile:) 
