@@ -19,6 +19,7 @@
 @property (nonatomic, retain) IBOutlet NSColorWell *guideColorWell;
 @property (nonatomic, retain) NSImage *image;
 @property (nonatomic, retain) IBOutlet NSButton *guideCheckbox;
+@property (nonatomic, retain) IBOutlet NSButton *skipCheckbox;
 @property (nonatomic, retain) IBOutlet NSButton *saveButton;
 - (IBAction) valueChanged:(id)sender;
 @end

@@ -11,6 +11,7 @@
 
 @implementation TileCutterView
 @synthesize filename, tileWidthField, tileHeightField, guideColorWell, image, guideCheckbox, saveButton;
+@synthesize skipCheckbox;
 
 - (id)initWithFrame:(NSRect)frame 
 {
