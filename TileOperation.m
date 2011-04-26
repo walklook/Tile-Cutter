@@ -14,6 +14,7 @@
 @implementation TileOperation
 @synthesize delegate, imageRep, row, baseFilename, tileHeight, tileWidth, outputFormat;
 @synthesize tilesInfo;
+@synthesize skipTransparentTiles;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {

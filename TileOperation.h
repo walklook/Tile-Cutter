@@ -29,6 +29,7 @@
 @property NSUInteger tileHeight;
 @property NSUInteger tileWidth;
 @property TileCutterOutputPrefs outputFormat;
+@property (readwrite) BOOL skipTransparentTiles;
 
 /* array of tiles info, 
  * each item = NSDictionary {
