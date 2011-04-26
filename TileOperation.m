@@ -108,8 +108,8 @@
 			// Add created Tile Info to tilesInfo array
 			NSRect tileRect = NSRectFromCGRect( CGRectMake(column * tileWidth, 
 														   row * tileHeight, 
-														   tileWidth, 
-														   tileHeight));
+														   [subImage size].width, 
+														   [subImage size].height));
 			NSDictionary *tileInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:
 										  [outPath lastPathComponent], @"Name",
 										  NSStringFromRect(tileRect), @"Rect",
