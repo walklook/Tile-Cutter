@@ -29,6 +29,7 @@
 
 @synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename, queue;
 @synthesize allTilesInfo;
+@synthesize imageInfo;
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
 {
@@ -79,6 +80,10 @@
     
     tileRowCount = [image rowsWithTileHeight:tileHeight];
     tileColCount = [image columnsWithTileWidth:tileWidth];
+	
+	self.imageInfo = [NSDictionary dictionaryWithObjectsAndKeys: 
+					  [tileCutterView.filename lastPathComponent], @"Filename",
+					  NSStringFromSize([image size]), @"Size", nil];
 	
 	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
     
@@ -182,7 +187,11 @@
 {
     if (progressRow >= tileRowCount)
 	{
-		[self.allTilesInfo writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+							  self.imageInfo, @"Source",
+							  self.allTilesInfo, @"Tiles", nil];
+		
+		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
         [NSApp endSheet:progressWindow];
 	}
     

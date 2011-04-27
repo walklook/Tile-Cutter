@@ -26,6 +26,7 @@
 @property (nonatomic, retain) NSOperationQueue *queue;
 
 @property(readwrite, retain) NSArray *allTilesInfo;
+@property(readwrite, retain) NSDictionary *imageInfo;
 
 - (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)openSelected:(id)sender;
