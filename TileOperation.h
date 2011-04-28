@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "TileCutterSettings.h"
 
 @class TileOperation;
 

@@ -54,6 +54,7 @@
 		6DA78C0C1369BEE1000EA884 /* cmdToolMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cmdToolMain.m; sourceTree = "<group>"; };
 		6DA78C411369C5FE000EA884 /* TileCutterCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileCutterCore.h; sourceTree = "<group>"; };
 		6DA78C421369C5FE000EA884 /* TileCutterCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TileCutterCore.m; sourceTree = "<group>"; };
+		6DA78CB51369E61A000EA884 /* TileCutterSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileCutterSettings.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Tile_Cutter-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tile_Cutter-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Tile Cutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tile Cutter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -80,6 +81,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6DA78CB51369E61A000EA884 /* TileCutterSettings.h */,
 				1FFB9977127C874900BE5A73 /* NSInvocation-MCUtilities.h */,
 				1FFB9978127C874900BE5A73 /* NSInvocation-MCUtilities.m */,
 				256AC3D80F4B6AC300CF3369 /* Tile_CutterAppDelegate.h */,

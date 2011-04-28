@@ -13,6 +13,7 @@
 #import <getopt.h>
 
 #import "TileCutterCore.h"
+#import "TileCutterSettings.h"
 
 void printUsageAndExit()
 {
