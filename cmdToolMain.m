@@ -17,14 +17,13 @@
 
 void printUsageAndExit()
 {
-	printf("\nUsage: tileCutter [keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT\
+	printf("\nUsage: tileCutter [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
 --inputFile INPUT.PNG --outputFile OUTPUT [--outputSuffix SUFFIX]\n\
 HEIGHT & WIDTH should be >= 1\n\
 output tiles file names will be in this format:\n\
 OUTPUT_X_Y-SUFFIX.png,\n\
 where X & Y is tile number\n\
-Output plist file will be:\n\
-OUTPUT.plist");
+Output plist file will be: OUTPUT.plist\n");
 	exit(0);
 }
 
