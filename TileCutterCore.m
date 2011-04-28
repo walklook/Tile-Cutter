@@ -69,6 +69,7 @@
         op.baseFilename = outputBaseFilename;
         op.delegate = self;
         op.outputFormat = self.outputFormat;
+		op.outputSuffix = self.outputSuffix;
 		op.skipTransparentTiles = (! self.keepAllTiles );
         [queue addOperation:op];
         [op release];

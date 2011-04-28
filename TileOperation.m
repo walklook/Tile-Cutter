@@ -44,6 +44,7 @@
 @synthesize delegate, imageRep, row, baseFilename, tileHeight, tileWidth, outputFormat;
 @synthesize tilesInfo;
 @synthesize skipTransparentTiles;
+@synthesize outputSuffix;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {
@@ -104,6 +105,10 @@
 		// Create tilesInfo Array for holding this Operation Tiles Info
 		self.tilesInfo = [NSMutableArray arrayWithCapacity: tileColCount];
 		
+		// Safe Empty Suffix
+		if (!self.outputSuffix)
+			self.outputSuffix = @"";
+		
         for (int column = 0; column < tileColCount; column++)
         {
             NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth tileHeight:(float)tileHeight column:column row:row];
@@ -144,7 +149,7 @@
 				if ([self isCancelled])
 					goto finish;
 				
-				NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d.%@", baseFilename, row, column, extension];
+				NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d%@.%@", baseFilename, row, column, self.outputSuffix, extension];
 				[bitmapData writeToFile:outPath atomically:YES];
 				
 				// Add created Tile Info to tilesInfo array
@@ -181,6 +186,7 @@
 
 - (void)dealloc
 {
+	self.outputSuffix = nil;
     delegate = nil;
     [imageRep release], imageRep = nil;
     [baseFilename release], baseFilename = nil;
