@@ -12,6 +12,8 @@
 #import <stdlib.h>
 #import <getopt.h>
 
+#import "TileCutterCore.h"
+
 void printUsageAndExit()
 {
 	printf("\nUsage: tileCutter [keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT\
@@ -133,7 +135,18 @@ int main(int argc, char *argv[])
 		printUsageAndExit();
 	}
 	
-	//TODO: process command line request
+	// Prepare Tile Cutter
+	TileCutterCore *tileCutterCore = [TileCutterCore new];
+	tileCutterCore.inputFilename = inputFilename;
+	tileCutterCore.outputBaseFilename = outputBaseFilename;
+	tileCutterCore.outputSuffix = outputSuffix;
+	tileCutterCore.tileWidth = tileWidth;
+	tileCutterCore.tileHeight = tileWidth;
+	tileCutterCore.keepAllTiles = (keepAllTiles != 0);
+	
+	// Start Cutting and Wait for it.
+	[tileCutterCore startSavingTiles];
+	[tileCutterCore.queue waitUntilAllOperationsAreFinished];
 	
 	[pool release];
 	return 0;
