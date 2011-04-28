@@ -34,7 +34,10 @@
 {
 	self.queue = nil;
 	self.allTilesInfo = nil;
-	self.imageInfo = nil;
+	self.imageInfo = nil;	
+	self.inputFilename = nil;
+	self.outputBaseFilename = nil;
+	self.outputSuffix = nil;
 	
 	[super dealloc];
 }
