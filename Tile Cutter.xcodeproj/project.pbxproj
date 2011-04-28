@@ -6,6 +6,21 @@
 	objectVersion = 45;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		6DA78D271369F7D9000EA884 /* Build All Targets */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6DA78D3E1369F7FE000EA884 /* Build configuration list for PBXAggregateTarget "Build All Targets" */;
+			buildPhases = (
+			);
+			dependencies = (
+				6DA78D2B1369F7E0000EA884 /* PBXTargetDependency */,
+				6DA78D2D1369F7E0000EA884 /* PBXTargetDependency */,
+			);
+			name = "Build All Targets";
+			productName = "Build All Targets";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		1F15EAF9125E8ED200B32D97 /* NSImage-Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F15EA19125E826600B32D97 /* NSImage-Tile.m */; };
@@ -28,6 +43,23 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6DA78D2A1369F7E0000EA884 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090 /* Tile Cutter */;
+			remoteInfo = "Tile Cutter";
+		};
+		6DA78D2C1369F7E0000EA884 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6DA78C061369BEB0000EA884 /* tileCutter */;
+			remoteInfo = tileCutter;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -234,6 +266,7 @@
 			targets = (
 				8D1107260486CEB800E47090 /* Tile Cutter */,
 				6DA78C061369BEB0000EA884 /* tileCutter */,
+				6DA78D271369F7D9000EA884 /* Build All Targets */,
 			);
 		};
 /* End PBXProject section */
@@ -283,6 +316,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6DA78D2B1369F7E0000EA884 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* Tile Cutter */;
+			targetProxy = 6DA78D2A1369F7E0000EA884 /* PBXContainerItemProxy */;
+		};
+		6DA78D2D1369F7E0000EA884 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6DA78C061369BEB0000EA884 /* tileCutter */;
+			targetProxy = 6DA78D2C1369F7E0000EA884 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -346,6 +392,27 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = tileCutter;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		6DA78D281369F7DA000EA884 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build All Targets";
+			};
+			name = Debug;
+		};
+		6DA78D291369F7DA000EA884 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Build All Targets";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -432,6 +499,15 @@
 			buildConfigurations = (
 				6DA78C091369BEB0000EA884 /* Debug */,
 				6DA78C0A1369BEB0000EA884 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DA78D3E1369F7FE000EA884 /* Build configuration list for PBXAggregateTarget "Build All Targets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DA78D281369F7DA000EA884 /* Debug */,
+				6DA78D291369F7DA000EA884 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
