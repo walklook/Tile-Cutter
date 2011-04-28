@@ -108,7 +108,7 @@
 							  self.imageInfo, @"Source",
 							  self.allTilesInfo, @"Tiles", nil];
 		
-		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", self.outputBaseFilename]  atomically:YES];
+		[dict writeToFile:[NSString stringWithFormat:@"%@%@.plist", self.outputBaseFilename, self.outputSuffix]  atomically:YES];
 	}
 	
 	if ([self.operationsDelegate respondsToSelector: _cmd])
