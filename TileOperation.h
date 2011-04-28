@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "TileCutterSettings.h"
 
 @class TileOperation;
 
@@ -26,6 +27,7 @@
 @property (retain) NSBitmapImageRep *imageRep;
 @property NSUInteger row;
 @property (retain) NSString *baseFilename;
+@property (readwrite, copy) NSString *outputSuffix;
 @property NSUInteger tileHeight;
 @property NSUInteger tileWidth;
 @property TileCutterOutputPrefs outputFormat;
