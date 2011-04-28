@@ -90,31 +90,40 @@
         progressRow++;
     }
 	
-	if (progressRow >= tileRowCount)
-	{
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-						  self.imageInfo, @"Source",
-						  self.allTilesInfo, @"Tiles", nil];
-	
-		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", self.outputBaseFilename]  atomically:YES];
-	}
-	
-    [self.operationsDelegate performSelector: _cmd withObject: op];
+	if ([self.operationsDelegate respondsToSelector: _cmd])
+		[self.operationsDelegate performSelectorOnMainThread: _cmd 
+												  withObject: op 
+											   waitUntilDone: NO];
 }
 
 - (void)operationDidFinishSuccessfully:(TileOperation *)op
 {
-	
 	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
 	op.tilesInfo = nil;
 	
-	[self.operationsDelegate performSelector: _cmd withObject: op];
+	// All Tiles Finished?
+	if (progressRow >= tileRowCount)
+	{
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+							  self.imageInfo, @"Source",
+							  self.allTilesInfo, @"Tiles", nil];
+		
+		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", self.outputBaseFilename]  atomically:YES];
+	}
+	
+	if ([self.operationsDelegate respondsToSelector: _cmd])
+		[self.operationsDelegate performSelectorOnMainThread: _cmd 
+												  withObject: op 
+											   waitUntilDone: NO];
 }
 
 
 - (void)operation:(TileOperation *)op didFailWithMessage:(NSString *)message
 {
-	[self.operationsDelegate performSelector: _cmd withObject: op];
+	if ([self.operationsDelegate respondsToSelector: _cmd])
+		[self.operationsDelegate performSelectorOnMainThread: _cmd 
+												  withObject: op 
+											   waitUntilDone: NO];
 }
 
 

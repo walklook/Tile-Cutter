@@ -165,16 +165,13 @@
 			}
             
             if ([delegate respondsToSelector:@selector(operationDidFinishTile:)])
-                [delegate performSelectorOnMainThread:@selector(operationDidFinishTile:) 
-                                           withObject:self 
-                                        waitUntilDone:NO];
+                [delegate operationDidFinishTile: self];
             
         }
         
         if ([delegate respondsToSelector:@selector(operationDidFinishSuccessfully:)])
-            [delegate performSelectorOnMainThread:@selector(operationDidFinishSuccessfully:) 
-                                       withObject:self 
-                                    waitUntilDone:NO];
+            [delegate operationDidFinishSuccessfully: self ];
+		
     finish:
         [pool drain];
     }
