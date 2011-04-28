@@ -57,16 +57,17 @@
         [defaults setInteger:200 forKey:@"heightField"];
     }
     
-    self.queue = [[[NSOperationQueue alloc] init] autorelease];
+	self.tileCore = [TileCutterCore new];
+	self.tileCore.delegate = self;
 }
+
 - (void)saveThread
 {
     NSLog(@"Save thread started");
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; 
     
-    NSImage *image = [[[NSImage alloc] initWithContentsOfFile:tileCutterView.filename] autorelease];
-    
-    [rowBar setIndeterminate:NO];
+	// Prepare GUI
+	[rowBar setIndeterminate:NO];
     [columnBar setIndeterminate:NO];
     [rowBar setMaxValue:(double)[image rowsWithTileHeight:[heightTextField floatValue]]];
     [rowBar setMinValue:0.];
@@ -74,43 +75,24 @@
     [columnBar setMinValue:0.];
     [columnBar setMaxValue:(double)[image columnsWithTileWidth:[widthTextField floatValue]]];
     [columnBar setDoubleValue:0.];
-    
-    progressCol = 0;
-    progressRow = 0;
-    
-    tileRowCount = [image rowsWithTileHeight:tileHeight];
-    tileColCount = [image columnsWithTileWidth:tileWidth];
 	
-	self.imageInfo = [NSDictionary dictionaryWithObjectsAndKeys: 
-					  [tileCutterView.filename lastPathComponent], @"Filename",
-					  NSStringFromSize([image size]), @"Size", nil];
+	// Setup Tile Core
+	self.tileCore.inputFilename = tileCutterView.filename
+	self.tileCore.tileWidth = tileWidth;
+	self.tileCore.tileHeight = tileHeight;
+	self.tileCore.outputFormat = (TileCutterOutputPrefs)[[NSUserDefaults standardUserDefaults] integerForKey:@"OutputFormat"];
+	self.tileCore.outputBaseFilename = baseFilename;
+	if (![tileCutterView.skipCheckbox intValue]) 
+		self.tileCore.keepAllTiles = YES;
+	else 
+		self.tileCore.keepAllTiles = NO;
 	
-	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    TileCutterOutputPrefs outputFormat = (TileCutterOutputPrefs)[defaults integerForKey:@"OutputFormat"];
-    for (int row = 0; row < tileRowCount; row++)
-    {
-        // Each row operation gets its own ImageRep to avoid contention
-        NSBitmapImageRep *imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:[image CGImageForProposedRect:NULL context:NULL hints:nil]] autorelease];
-        TileOperation *op = [[TileOperation alloc] init];
-        op.row = row;
-        op.tileWidth = tileWidth;
-        op.tileHeight = tileHeight;
-        op.imageRep = imageRep;
-        op.baseFilename = baseFilename;
-        op.delegate = self;
-        op.outputFormat = outputFormat;
-		if (![tileCutterView.skipCheckbox intValue]) 
-			op.skipTransparentTiles = NO;
-		else 
-			op.skipTransparentTiles = YES;
-        [queue addOperation:op];
-        [op release];
-    }
+	// Start Tiling
+	[self.tileCore startSavingTiles];    
     
     [pool drain];
 }
+
 - (IBAction)saveButtonPressed:(id)sender
 {
     NSSavePanel *sp = [NSSavePanel savePanel];
@@ -152,6 +134,7 @@
     //[queue setSuspended:YES];
     [self performSelectorInBackground:@selector(saveThread) withObject:nil];
 }
+
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
     [sheet orderOut:self];
@@ -173,13 +156,12 @@
 }
 - (void)dealloc
 {
-	self.allTilesInfo = nil;
+	self.tileCore = nil;
     [columnBar release], columnBar = nil;
     [rowBar release], rowBar = nil;
     [progressWindow release], progressWindow = nil;
     [progressLabel release], progressLabel = nil;
     [baseFilename release], baseFilename = nil;
-    [queue release], queue = nil;
     [super dealloc];
 }
 #pragma mark -
@@ -219,8 +201,7 @@
 
 - (void)operationDidFinishSuccessfully:(TileOperation *)op
 {
-	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
-	op.tilesInfo = nil;
+	
 }
 
 - (void)delayAlert:(NSString *)message
@@ -232,6 +213,7 @@
     [alert setAlertStyle:NSCriticalAlertStyle];
     [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
 }
+
 - (void)operation:(TileOperation *)op didFailWithMessage:(NSString *)message
 {
     [NSApp endSheet:progressWindow];

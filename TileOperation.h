@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+//TODO: add suffix property
 
 @class TileOperation;
 

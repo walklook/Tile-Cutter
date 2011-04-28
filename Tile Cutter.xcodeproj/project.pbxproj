@@ -18,6 +18,8 @@
 		1FFB9A18127CAD9F00BE5A73 /* NSBitmapImageRep-Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FFB9A17127CAD9F00BE5A73 /* NSBitmapImageRep-Tile.m */; };
 		256AC3DA0F4B6AC300CF3369 /* Tile_CutterAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* Tile_CutterAppDelegate.m */; };
 		6DA78C0D1369BEE1000EA884 /* cmdToolMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA78C0C1369BEE1000EA884 /* cmdToolMain.m */; };
+		6DA78C431369C5FE000EA884 /* TileCutterCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA78C421369C5FE000EA884 /* TileCutterCore.m */; };
+		6DA78C441369C5FE000EA884 /* TileCutterCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA78C421369C5FE000EA884 /* TileCutterCore.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -50,6 +52,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		6DA78C071369BEB0000EA884 /* tileCutter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tileCutter; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA78C0C1369BEE1000EA884 /* cmdToolMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cmdToolMain.m; sourceTree = "<group>"; };
+		6DA78C411369C5FE000EA884 /* TileCutterCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileCutterCore.h; sourceTree = "<group>"; };
+		6DA78C421369C5FE000EA884 /* TileCutterCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TileCutterCore.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Tile_Cutter-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Tile_Cutter-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Tile Cutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tile Cutter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -90,6 +94,8 @@
 				1FFB9940127C847100BE5A73 /* TileOperation.m */,
 				1FFB9A16127CAD9F00BE5A73 /* NSBitmapImageRep-Tile.h */,
 				1FFB9A17127CAD9F00BE5A73 /* NSBitmapImageRep-Tile.m */,
+				6DA78C411369C5FE000EA884 /* TileCutterCore.h */,
+				6DA78C421369C5FE000EA884 /* TileCutterCore.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -246,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DA78C0D1369BEE1000EA884 /* cmdToolMain.m in Sources */,
+				6DA78C431369C5FE000EA884 /* TileCutterCore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +268,7 @@
 				1FFB9941127C847100BE5A73 /* TileOperation.m in Sources */,
 				1FFB9979127C874900BE5A73 /* NSInvocation-MCUtilities.m in Sources */,
 				1FFB9A18127CAD9F00BE5A73 /* NSBitmapImageRep-Tile.m in Sources */,
+				6DA78C441369C5FE000EA884 /* TileCutterCore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
