@@ -24,6 +24,12 @@
 @property(readwrite, copy) NSString *outputBaseFilename;
 @property(readwrite, copy) NSString *outputSuffix;
 
+// Properties of Global Tiling Operation Status
+@property(readwrite) int tileRowCount;
+@property(readwrite) int tileColCount;
+@property(readwrite) int progressCol;
+@property(readwrite) int progressRow;
+
 // TileOperationDelegate messages will be forwarded after processing to this delegate
 @property(readwrite, assign) id<TileOperationDelegate> operationsDelegate;
 

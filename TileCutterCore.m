@@ -76,6 +76,22 @@
 
 - (void)operationDidFinishTile:(TileOperation *)op
 {
+	progressCol++;
+    if (progressCol >= tileColCount)
+    {
+        progressCol = 0;
+        progressRow++;
+    }
+	
+	if (progressRow >= tileRowCount)
+	{
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  self.imageInfo, @"Source",
+						  self.allTilesInfo, @"Tiles", nil];
+	
+		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
+	}
+	
     [self.delegate performSelector: _cmd withObject: op];
 }
 

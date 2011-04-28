@@ -16,20 +16,15 @@
 
 
 @interface Tile_CutterAppDelegate()
-{
-    int tileHeight, tileWidth;
-    int tileRowCount, tileColCount;
-    int progressCol, progressRow;
-}
+
 - (void)delayAlert:(NSString *)message;
+
 @end
 
 
 @implementation Tile_CutterAppDelegate
 
-@synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename, queue;
-@synthesize allTilesInfo;
-@synthesize imageInfo;
+@synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename;
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
 {
@@ -58,7 +53,7 @@
     }
     
 	self.tileCore = [TileCutterCore new];
-	self.tileCore.delegate = self;
+	self.tileCore.operationsDelegate = self;
 }
 
 - (void)saveThread
@@ -66,20 +61,9 @@
     NSLog(@"Save thread started");
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; 
     
-	// Prepare GUI
-	[rowBar setIndeterminate:NO];
-    [columnBar setIndeterminate:NO];
-    [rowBar setMaxValue:(double)[image rowsWithTileHeight:[heightTextField floatValue]]];
-    [rowBar setMinValue:0.];
-    [rowBar setDoubleValue:0.];
-    [columnBar setMinValue:0.];
-    [columnBar setMaxValue:(double)[image columnsWithTileWidth:[widthTextField floatValue]]];
-    [columnBar setDoubleValue:0.];
 	
 	// Setup Tile Core
-	self.tileCore.inputFilename = tileCutterView.filename
-	self.tileCore.tileWidth = tileWidth;
-	self.tileCore.tileHeight = tileHeight;
+	self.tileCore.inputFilename = tileCutterView.filename;
 	self.tileCore.outputFormat = (TileCutterOutputPrefs)[[NSUserDefaults standardUserDefaults] integerForKey:@"OutputFormat"];
 	self.tileCore.outputBaseFilename = baseFilename;
 	if (![tileCutterView.skipCheckbox intValue]) 
@@ -111,8 +95,8 @@
     if (returnCode == NSOKButton) 
     {
         self.baseFilename = [[savePanel filename] stringByDeletingPathExtension];
-        tileHeight = [heightTextField intValue];
-        tileWidth = [widthTextField intValue];
+        self.tileCore.tileHeight = [heightTextField intValue];
+        self.tileCore.tileWidth = [widthTextField intValue];
         
         [self performSelector:@selector(delayPresentSheet) withObject:nil afterDelay:0.1];
     }
@@ -167,29 +151,18 @@
 #pragma mark -
 - (void)updateProgress
 {
-    if (progressRow >= tileRowCount)
+    if (self.tileCore.progressRow >= self.tileCore.tileRowCount)
 	{
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-							  self.imageInfo, @"Source",
-							  self.allTilesInfo, @"Tiles", nil];
-		
-		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
         [NSApp endSheet:progressWindow];
 	}
     
 //    [rowBar setDoubleValue:(double)progressRow];
 //    [columnBar setDoubleValue:(double)progressCol];
-    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", progressRow, progressCol]]; 
+    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", self.tileCore.progressRow, self.tileCore.progressCol]]; 
 }
 - (void)operationDidFinishTile:(TileOperation *)op
 {
-    progressCol++;
-    if (progressCol >= tileColCount)
-    {
-        progressCol = 0;
-        progressRow++;
-    }
-    if (progressRow >= tileRowCount)
+    if (self.tileCore.progressRow >= self.tileCore.tileRowCount)
         [NSApp endSheet:progressWindow];
     
 //    [rowBar setDoubleValue:(double)progressRow];
