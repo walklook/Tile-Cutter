@@ -31,7 +31,7 @@
 @property(readwrite) int progressRow;
 
 // TileOperationDelegate messages will be forwarded after processing to this delegate
-@property(readwrite, assign) id<TileOperationDelegate> operationsDelegate;
+@property(readwrite, assign) NSObject<TileOperationDelegate> *operationsDelegate;
 
 #pragma mark Public Methods
 

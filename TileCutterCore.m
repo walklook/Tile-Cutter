@@ -7,6 +7,7 @@
 //
 
 #import "TileCutterCore.h"
+#import "NSImage-Tile.h"
 
 @implementation TileCutterCore
 
@@ -25,6 +26,8 @@
 		self.outputSuffix = @"";
 		self.keepAllTiles = NO;
 	}
+	
+	return self;
 }
 
 - (void) dealloc
@@ -89,24 +92,25 @@
 						  self.imageInfo, @"Source",
 						  self.allTilesInfo, @"Tiles", nil];
 	
-		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", baseFilename]  atomically:YES];
+		[dict writeToFile:[NSString stringWithFormat:@"%@.plist", self.outputBaseFilename]  atomically:YES];
 	}
 	
-    [self.delegate performSelector: _cmd withObject: op];
+    [self.operationsDelegate performSelector: _cmd withObject: op];
 }
 
 - (void)operationDidFinishSuccessfully:(TileOperation *)op
 {
+	
 	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
 	op.tilesInfo = nil;
 	
-	[self.delegate performSelector: _cmd withObject: op];
+	[self.operationsDelegate performSelector: _cmd withObject: op];
 }
 
 
 - (void)operation:(TileOperation *)op didFailWithMessage:(NSString *)message
 {
-	[self.delegate performSelector: _cmd withObject: op];
+	[self.operationsDelegate performSelector: _cmd withObject: op];
 }
 
 
