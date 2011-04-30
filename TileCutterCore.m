@@ -108,6 +108,8 @@
 							  self.imageInfo, @"Source",
 							  self.allTilesInfo, @"Tiles", nil];
 		
+		if (!self.outputSuffix)
+			self.outputSuffix = @"";
 		[dict writeToFile:[NSString stringWithFormat:@"%@%@.plist", self.outputBaseFilename, self.outputSuffix]  atomically:YES];
 	}
 	
