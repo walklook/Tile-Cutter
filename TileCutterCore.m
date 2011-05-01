@@ -22,6 +22,8 @@
 	if ( (self == [super init]) )
 	{
 		self.queue = [[[NSOperationQueue alloc] init] autorelease];
+		[self.queue setMaxConcurrentOperationCount:1];
+		
 		self.outputFormat = NSPNGFileType;
 		self.outputSuffix = @"";
 		self.keepAllTiles = NO;
@@ -60,10 +62,12 @@
 	
 	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
     
+	// One ImageRep for all TileOperation
+	NSBitmapImageRep *imageRep = 
+		[[[NSBitmapImageRep alloc] initWithCGImage:[image CGImageForProposedRect:NULL context:NULL hints:nil]] autorelease];
+	
     for (int row = 0; row < tileRowCount; row++)
     {
-        // Each row operation gets its own ImageRep to avoid contention
-        NSBitmapImageRep *imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:[image CGImageForProposedRect:NULL context:NULL hints:nil]] autorelease];
         TileOperation *op = [[TileOperation alloc] init];
         op.row = row;
         op.tileWidth = self.tileWidth;
