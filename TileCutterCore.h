@@ -16,6 +16,7 @@
 #pragma mark  Public Properties
 
 // Properties of Tiling Operation
+@property(readwrite) BOOL rigidTiles;
 @property(readwrite) BOOL keepAllTiles;
 @property(readwrite) NSUInteger tileWidth;
 @property(readwrite) NSUInteger tileHeight;

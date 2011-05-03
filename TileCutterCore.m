@@ -14,6 +14,7 @@
 @synthesize keepAllTiles, tileWidth, tileHeight, inputFilename, 
 			outputBaseFilename, outputSuffix, operationsDelegate, 
 			queue, allTilesInfo, imageInfo, outputFormat;
+@synthesize rigidTiles;
 
 #pragma mark Public Methods
 
@@ -27,6 +28,7 @@
 		self.outputFormat = NSPNGFileType;
 		self.outputSuffix = @"";
 		self.keepAllTiles = NO;
+		self.rigidTiles = NO;
 	}
 	
 	return self;
@@ -78,6 +80,7 @@
         op.outputFormat = self.outputFormat;
 		op.outputSuffix = self.outputSuffix;
 		op.skipTransparentTiles = (! self.keepAllTiles );
+		op.rigidTiles = self.rigidTiles;
         [queue addOperation:op];
         [op release];
     }
