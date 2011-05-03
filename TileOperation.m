@@ -45,6 +45,7 @@
 @synthesize tilesInfo;
 @synthesize skipTransparentTiles;
 @synthesize outputSuffix;
+@synthesize rigidTiles;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {
@@ -111,7 +112,11 @@
 		
         for (int column = 0; column < tileColCount; column++)
         {
-            NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth tileHeight:(float)tileHeight column:column row:row];
+            NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth
+													 tileHeight:(float)tileHeight 
+														 column:column 
+															row:row 
+													  rigidSize:self.rigidTiles];
             
             if (subImage == nil)
             {
