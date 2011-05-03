@@ -10,7 +10,19 @@
 
 
 @implementation NSBitmapImageRep(Tile)
--(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth tileHeight:(CGFloat)tileHeight column:(NSUInteger)column row:(NSUInteger)row
+-(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth 
+					   tileHeight:(CGFloat)tileHeight 
+						   column:(NSUInteger)column 
+							  row:(NSUInteger)row
+{
+	return [self subImageWithTileWidth:tileWidth tileHeight:tileHeight column: column row:row rigidSize: NO];
+}
+
+-(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth 
+					   tileHeight:(CGFloat)tileHeight 
+						   column:(NSUInteger)column 
+							  row:(NSUInteger)row
+						rigidSize:(BOOL) rigid
 {
     int width = [self pixelsWide];
     int height = [self pixelsHigh];
@@ -25,7 +37,7 @@
     int lastCol;
     int outputWidth;
     
-    if (theCol + tileWidth > width) // last column, not full size
+    if ( !rigid && (theCol + tileWidth > width) ) // last column, not full size
     {
         lastCol = width;
         outputWidth = (width - theCol);
@@ -37,7 +49,7 @@
     }
     
     int lastRow, outputHeight;
-    if (theRow + tileHeight > height)
+    if ( !rigid && (theRow + tileHeight > height) )
     {
         lastRow = height;
         outputHeight = (height - theRow);
