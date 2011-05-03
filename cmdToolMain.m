@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 {
 	// Options Storage
 	int keepAllTiles = 0;
+	int rigidTilesSize = 0;
 	NSUInteger tileWidth = 0;
 	NSUInteger tileHeight = 0;
 	NSString *inputFilename = nil;
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
 			/* These options set a flag. */
 			{"skipTransparentTiles",   no_argument,       &keepAllTiles, 0},
 			{"keepTransparentTiles",   no_argument,       &keepAllTiles, 1},
+			{"rigidTilesSize",         no_argument,       &rigidTilesSize, 1},
 			/* These options don't set a flag.
 			 We distinguish them by their indices. */
 			{"tileWidth",    required_argument, 0, 'w'},
@@ -143,6 +145,7 @@ int main(int argc, char *argv[])
 	tileCutterCore.tileWidth = tileWidth;
 	tileCutterCore.tileHeight = tileWidth;
 	tileCutterCore.keepAllTiles = (keepAllTiles != 0);
+	tileCutterCore.rigidTiles = (rigidTilesSize != 0);
 	
 	// Start Cutting and Wait for it.
 	[tileCutterCore startSavingTiles];
