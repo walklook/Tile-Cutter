@@ -74,8 +74,19 @@
         {
             p1 = srcData + bytesPerPixel * (y * width + x);
             p2 = destData + bytesPerPixel * ((y - theRow) * width + (x - theCol));
-            for (i = 0; i < bytesPerPixel; i++)
-                p2[i] = p1[i];
+            
+			if ( x >= width || y >= height)
+			{
+				// fill with zeroes pixels outside self.size
+				for (i = 0; i < bytesPerPixel; i++)
+					p2[i] = 0;
+			}
+			else
+			{
+				// copy pixels as usual
+				for (i = 0; i < bytesPerPixel; i++)
+					p2[i] = p1[i];
+			}
         }
     }
     
