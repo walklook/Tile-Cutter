@@ -16,18 +16,15 @@
 
 
 @interface Tile_CutterAppDelegate()
-{
-    int tileHeight, tileWidth;
-    int tileRowCount, tileColCount;
-    int progressCol, progressRow;
-}
+
 - (void)delayAlert:(NSString *)message;
+
 @end
 
 
 @implementation Tile_CutterAppDelegate
 
-@synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename, queue;
+@synthesize window, tileCutterView, widthTextField, heightTextField, rowBar, columnBar, progressWindow, progressLabel, baseFilename;
 
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
 {
@@ -55,50 +52,31 @@
         [defaults setInteger:200 forKey:@"heightField"];
     }
     
-    self.queue = [[[NSOperationQueue alloc] init] autorelease];
+	self.tileCore = [TileCutterCore new];
+	self.tileCore.operationsDelegate = self;
 }
+
 - (void)saveThread
 {
     NSLog(@"Save thread started");
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; 
     
-    NSImage *image = [[[NSImage alloc] initWithContentsOfFile:tileCutterView.filename] autorelease];
-    
-    [rowBar setIndeterminate:NO];
-    [columnBar setIndeterminate:NO];
-    [rowBar setMaxValue:(double)[image rowsWithTileHeight:[heightTextField floatValue]]];
-    [rowBar setMinValue:0.];
-    [rowBar setDoubleValue:0.];
-    [columnBar setMinValue:0.];
-    [columnBar setMaxValue:(double)[image columnsWithTileWidth:[widthTextField floatValue]]];
-    [columnBar setDoubleValue:0.];
-    
-    progressCol = 0;
-    progressRow = 0;
-    
-    tileRowCount = [image rowsWithTileHeight:tileHeight];
-    tileColCount = [image columnsWithTileWidth:tileWidth];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    TileCutterOutputPrefs outputFormat = (TileCutterOutputPrefs)[defaults integerForKey:@"OutputFormat"];
-    for (int row = 0; row < tileRowCount; row++)
-    {
-        // Each row operation gets its own ImageRep to avoid contention
-        NSBitmapImageRep *imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:[image CGImageForProposedRect:NULL context:NULL hints:nil]] autorelease];
-        TileOperation *op = [[TileOperation alloc] init];
-        op.row = row;
-        op.tileWidth = tileWidth;
-        op.tileHeight = tileHeight;
-        op.imageRep = imageRep;
-        op.baseFilename = baseFilename;
-        op.delegate = self;
-        op.outputFormat = outputFormat;
-        [queue addOperation:op];
-        [op release];
-    }
+	
+	// Setup Tile Core
+	self.tileCore.inputFilename = tileCutterView.filename;
+	self.tileCore.outputFormat = (TileCutterOutputPrefs)[[NSUserDefaults standardUserDefaults] integerForKey:@"OutputFormat"];
+	self.tileCore.outputBaseFilename = baseFilename;
+	if (![tileCutterView.skipCheckbox intValue]) 
+		self.tileCore.keepAllTiles = YES;
+	else 
+		self.tileCore.keepAllTiles = NO;
+	
+	// Start Tiling
+	[self.tileCore startSavingTiles];    
     
     [pool drain];
 }
+
 - (IBAction)saveButtonPressed:(id)sender
 {
     NSSavePanel *sp = [NSSavePanel savePanel];
@@ -117,8 +95,8 @@
     if (returnCode == NSOKButton) 
     {
         self.baseFilename = [[savePanel filename] stringByDeletingPathExtension];
-        tileHeight = [heightTextField intValue];
-        tileWidth = [widthTextField intValue];
+        self.tileCore.tileHeight = [heightTextField intValue];
+        self.tileCore.tileWidth = [widthTextField intValue];
         
         [self performSelector:@selector(delayPresentSheet) withObject:nil afterDelay:0.1];
     }
@@ -140,6 +118,7 @@
     //[queue setSuspended:YES];
     [self performSelectorInBackground:@selector(saveThread) withObject:nil];
 }
+
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
     [sheet orderOut:self];
@@ -161,33 +140,29 @@
 }
 - (void)dealloc
 {
+	self.tileCore = nil;
     [columnBar release], columnBar = nil;
     [rowBar release], rowBar = nil;
     [progressWindow release], progressWindow = nil;
     [progressLabel release], progressLabel = nil;
     [baseFilename release], baseFilename = nil;
-    [queue release], queue = nil;
     [super dealloc];
 }
 #pragma mark -
 - (void)updateProgress
 {
-    if (progressRow >= tileRowCount)
+    if (self.tileCore.progressRow >= self.tileCore.tileRowCount)
+	{
         [NSApp endSheet:progressWindow];
+	}
     
 //    [rowBar setDoubleValue:(double)progressRow];
 //    [columnBar setDoubleValue:(double)progressCol];
-    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", progressRow, progressCol]]; 
+    [progressLabel setStringValue:[NSString stringWithFormat:@"Processing row %d, column %d", self.tileCore.progressRow, self.tileCore.progressCol]]; 
 }
 - (void)operationDidFinishTile:(TileOperation *)op
 {
-    progressCol++;
-    if (progressCol >= tileColCount)
-    {
-        progressCol = 0;
-        progressRow++;
-    }
-    if (progressRow >= tileRowCount)
+    if (self.tileCore.progressRow >= self.tileCore.tileRowCount)
         [NSApp endSheet:progressWindow];
     
 //    [rowBar setDoubleValue:(double)progressRow];
@@ -196,6 +171,12 @@
     
     [self performSelectorOnMainThread:@selector(updateProgress) withObject:nil waitUntilDone:NO];
 }
+
+- (void)operationDidFinishSuccessfully:(TileOperation *)op
+{
+	
+}
+
 - (void)delayAlert:(NSString *)message
 {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
@@ -205,6 +186,7 @@
     [alert setAlertStyle:NSCriticalAlertStyle];
     [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
 }
+
 - (void)operation:(TileOperation *)op didFailWithMessage:(NSString *)message
 {
     [NSApp endSheet:progressWindow];

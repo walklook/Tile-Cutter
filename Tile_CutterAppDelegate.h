@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TileOperation.h"
+#import "TileCutterCore.h"
 @class TileCutterView;
 
 @interface Tile_CutterAppDelegate : NSObject <NSApplicationDelegate, TileOperationDelegate> 
@@ -23,7 +23,8 @@
 @property (retain) IBOutlet NSWindow *progressWindow;
 @property (retain) IBOutlet NSTextField *progressLabel;
 @property (retain) IBOutlet NSString *baseFilename;
-@property (nonatomic, retain) NSOperationQueue *queue;
+
+@property (retain) TileCutterCore *tileCore;
 
 - (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)openSelected:(id)sender;

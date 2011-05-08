@@ -11,8 +11,41 @@
 #import "NSInvocation-MCUtilities.h"
 #import "NSBitmapImageRep-Tile.h"
 
+@interface NSBitmapImageRep (Extension)
+
+- (BOOL) isAbsoluteTransparent;
+
+@end
+
+@implementation NSBitmapImageRep (Extension)
+
+- (BOOL) isAbsoluteTransparent
+{	
+	NSSize s = [self size];
+	
+	for (int i = 0; i < s.width; ++i)
+	{
+		for (int j = 0; j < s.height; ++j)
+		{
+			NSColor *col = [self colorAtX:i y:j];
+			
+			if ([col alphaComponent] != 0.0f)
+				return NO;
+		}
+	}
+	
+	return YES;
+}
+
+@end
+
+
 @implementation TileOperation
 @synthesize delegate, imageRep, row, baseFilename, tileHeight, tileWidth, outputFormat;
+@synthesize tilesInfo;
+@synthesize skipTransparentTiles;
+@synthesize outputSuffix;
+@synthesize rigidTiles;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {
@@ -65,12 +98,25 @@
                 extension = @"jpg";
                 fileType = NSJPEGFileType;
                 break;
-        }
+        }		
         
+		// Get Tile Count for this Operation
 		int tileColCount = [imageRep columnsWithTileWidth:tileWidth];
+		
+		// Create tilesInfo Array for holding this Operation Tiles Info
+		self.tilesInfo = [NSMutableArray arrayWithCapacity: tileColCount];
+		
+		// Safe Empty Suffix
+		if (!self.outputSuffix)
+			self.outputSuffix = @"";
+		
         for (int column = 0; column < tileColCount; column++)
         {
-            NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth tileHeight:(float)tileHeight column:column row:row];
+            NSImage *subImage = [imageRep subImageWithTileWidth:(float)tileWidth
+													 tileHeight:(float)tileHeight 
+														 column:column 
+															row:row 
+													  rigidSize:self.rigidTiles];
             
             if (subImage == nil)
             {
@@ -78,38 +124,59 @@
                 goto finish;
             }
             
-            NSArray * representations = [subImage representations];
-            
+            NSArray * representations = [subImage representations];			
+            NSBitmapImageRep *subBitmapRep = nil;
+			if ( [representations count] )
+				subBitmapRep = [representations objectAtIndex: 0];
+			
             if ([self isCancelled])
                 goto finish;
             
-            NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
-                                                                          usingType:fileType properties:nil];
-            
-            if (bitmapData == nil)
-            {
-                [self informDelegateOfError:NSLocalizedString(@"Error retrieving bitmap data from result", @"")];
-                goto finish;
-            }
-            
-            
-            if ([self isCancelled])
-                goto finish;
-            
-            NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d.%@", baseFilename, row, column, extension];
-            [bitmapData writeToFile:outPath atomically:YES];
+			
+			
+			// Analyze do we need this tile saved
+			BOOL curTileNeeded = ! (self.skipTransparentTiles && [subBitmapRep isAbsoluteTransparent]);
+			
+			// save if yes
+			if ( curTileNeeded )
+			{			
+				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations 
+																			  usingType:fileType properties:nil];
+				
+				
+				if (bitmapData == nil)
+				{
+					[self informDelegateOfError:NSLocalizedString(@"Error retrieving bitmap data from result", @"")];
+					goto finish;
+				}
+				
+				
+				if ([self isCancelled])
+					goto finish;
+				
+				NSString *outPath = [NSString stringWithFormat:@"%@_%d_%d%@.%@", baseFilename, row, column, self.outputSuffix, extension];
+				[bitmapData writeToFile:outPath atomically:YES];
+				
+				// Add created Tile Info to tilesInfo array
+				NSRect tileRect = NSRectFromCGRect( CGRectMake(column * tileWidth, 
+															   row * tileHeight, 
+															   [subImage size].width, 
+															   [subImage size].height));
+				NSDictionary *tileInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:
+											  [outPath lastPathComponent], @"Name",
+											  NSStringFromRect(tileRect), @"Rect",
+											  nil];
+				[(NSMutableArray *)self.tilesInfo addObject: tileInfoDict ];
+			}
             
             if ([delegate respondsToSelector:@selector(operationDidFinishTile:)])
-                [delegate performSelectorOnMainThread:@selector(operationDidFinishTile:) 
-                                           withObject:self 
-                                        waitUntilDone:NO];
+                [delegate operationDidFinishTile: self];
             
         }
         
         if ([delegate respondsToSelector:@selector(operationDidFinishSuccessfully:)])
-            [delegate performSelectorOnMainThread:@selector(operationDidFinishSuccessfully:) 
-                                       withObject:self 
-                                    waitUntilDone:NO];
+            [delegate operationDidFinishSuccessfully: self ];
+		
     finish:
         [pool drain];
     }
@@ -121,9 +188,11 @@
 
 - (void)dealloc
 {
+	self.outputSuffix = nil;
     delegate = nil;
     [imageRep release], imageRep = nil;
     [baseFilename release], baseFilename = nil;
+	self.tilesInfo = nil;
     
     [super dealloc];
 }
