@@ -17,13 +17,16 @@
 
 void printUsageAndExit()
 {
-	printf("\nUsage: tileCutter [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
+	printf("\nUsage: tileCutter [--rigidTilesSize] [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
 --inputFile INPUT.PNG --outputFile OUTPUT [--outputSuffix SUFFIX]\n\
 HEIGHT & WIDTH should be >= 1\n\
 output tiles file names will be in this format:\n\
 OUTPUT_X_Y-SUFFIX.png,\n\
 where X & Y is tile number\n\
-Output plist file will be: OUTPUT.plist\n");
+Output plist file will be: OUTPUT.plist\n\
+If --rigidTilesSize flag is set, then all tiles will have the same size.\n\
+If image isn't divisible by tileSize without a remainder - missing pixels will be added.\n\
+If --keepTransparentTiles flag is set, than absolute transparent tiles will be not skiped.\n");
 	exit(0);
 }
 
