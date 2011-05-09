@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	NSString *inputFilename = nil;
 	NSString *outputBaseFilename = nil;
 	NSString *outputSuffix = nil;
-	CGFloat *contentScaleFactor = 1.0f;
+	float_t contentScaleFactor = 1.0f;
 	
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
