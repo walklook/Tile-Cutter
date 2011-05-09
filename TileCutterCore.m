@@ -15,6 +15,7 @@
 			outputBaseFilename, outputSuffix, operationsDelegate, 
 			queue, allTilesInfo, imageInfo, outputFormat;
 @synthesize rigidTiles;
+@synthesize contentScaleFactor;
 
 #pragma mark Public Methods
 
@@ -58,9 +59,12 @@
     tileRowCount = [image rowsWithTileHeight: self.tileHeight];
     tileColCount = [image columnsWithTileWidth: self.tileWidth];
 	
+	NSSize outputImageSizeForPlist = [image size];
+	outputImageSizeForPlist.width /= self.contentScaleFactor;
+	outputImageSizeForPlist.height /= self.contentScaleFactor;
 	self.imageInfo = [NSDictionary dictionaryWithObjectsAndKeys: 
 					  [self.inputFilename lastPathComponent], @"Filename",
-					  NSStringFromSize([image size]), @"Size", nil];
+					  NSStringFromSize(outputImageSizeForPlist), @"Size", nil];
 	
 	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
     
@@ -103,6 +107,48 @@
 											   waitUntilDone: NO];
 }
 
+- (void) saveImageInfoDictionary
+{
+	// Change coordinates & size of all tiles for contentScaleFactor
+	if (self.contentScaleFactor != 1.0f)
+	{
+		for (NSDictionary *tileDict in self.allTilesInfo)
+		{
+			// Get Tile Rect
+			NSRect rect = NSRectFromString([tileDict objectForKey: @"Rect"]);
+			
+			// Divide it by contentScaleFactor
+			rect.origin.x /= self.contentScaleFactor;
+			rect.origin.y /= self.contentScaleFactor;
+			rect.size.width /= self.contentScaleFactor;
+			rect.size.height /= self.contentScaleFactor;
+			
+			// Create new tile info Dict with changed rect
+			NSDictionary *newTileDict = [NSDictionary dictionaryWithObjectsAndKeys:
+										  [tileDict objectForKey:@"Name"], @"Name",
+										  NSStringFromRect(rect), @"Rect",
+										  nil];
+			
+			// Replace old Tile Info Dict with New One
+			[(NSMutableArray *)self.allTilesInfo replaceObjectAtIndex:[self.allTilesInfo indexOfObject: tileDict] withObject:newTileDict ];
+			
+		}
+	}
+	
+	// Create Root Dictionary for a PLIST file
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  self.imageInfo, @"Source",
+						  self.allTilesInfo, @"Tiles",
+						  [NSNumber numberWithFloat:self.contentScaleFactor], @"ContentScaleFactor", nil];
+	
+	// Be safe with outputSuffix
+	if (!self.outputSuffix)
+		self.outputSuffix = @"";
+	
+	// Save Dict to File
+	[dict writeToFile:[NSString stringWithFormat:@"%@%@.plist", self.outputBaseFilename, self.outputSuffix]  atomically:YES];
+}
+
 - (void)operationDidFinishSuccessfully:(TileOperation *)op
 {
 	[(NSMutableArray *)self.allTilesInfo addObjectsFromArray: op.tilesInfo];
@@ -111,13 +157,7 @@
 	// All Tiles Finished?
 	if (progressRow >= tileRowCount)
 	{
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-							  self.imageInfo, @"Source",
-							  self.allTilesInfo, @"Tiles", nil];
-		
-		if (!self.outputSuffix)
-			self.outputSuffix = @"";
-		[dict writeToFile:[NSString stringWithFormat:@"%@%@.plist", self.outputBaseFilename, self.outputSuffix]  atomically:YES];
+		[self saveImageInfoDictionary];
 	}
 	
 	if ([self.operationsDelegate respondsToSelector: _cmd])

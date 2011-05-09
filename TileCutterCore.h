@@ -20,6 +20,7 @@
 @property(readwrite) BOOL keepAllTiles;
 @property(readwrite) NSUInteger tileWidth;
 @property(readwrite) NSUInteger tileHeight;
+@property(readwrite) float_t contentScaleFactor;
 @property(readwrite) TileCutterOutputPrefs outputFormat;
 @property(readwrite, copy) NSString *inputFilename;
 @property(readwrite, copy) NSString *outputBaseFilename;
