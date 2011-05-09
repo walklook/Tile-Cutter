@@ -31,6 +31,27 @@ If --keepTransparentTiles flag is set, than absolute transparent tiles will be n
 	exit(0);
 }
 
+BOOL fileExists(NSString* relPath)
+{
+	NSString *fullpath = nil;
+	
+	// only if it is not an absolute path
+	if( ! [relPath isAbsolutePath] )
+	{
+		NSString *file = [relPath lastPathComponent];
+		NSString *imageDirectory = [relPath stringByDeletingLastPathComponent];
+		
+		fullpath = [[NSBundle mainBundle] pathForResource:file
+												   ofType:nil
+											  inDirectory:imageDirectory];
+	}
+	
+	if (fullpath == nil)
+		fullpath = relPath;
+	
+	return [[NSFileManager defaultManager] fileExistsAtPath: fullpath];
+}
+
 int main(int argc, char *argv[])
 {
 	// Options Storage
@@ -147,6 +168,14 @@ int main(int argc, char *argv[])
 	{
 		[pool release];
 		printUsageAndExit();
+	}
+	
+	// avoid crashing if file not exists
+	if ( !fileExists(inputFilename) )
+	{
+		printf("\nFile not found: %s \n", [inputFilename cStringUsingEncoding:NSUTF8StringEncoding]);
+		[pool release];
+		exit(0);
 	}
 	
 	// Prepare Tile Cutter
