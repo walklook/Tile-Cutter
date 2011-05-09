@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 	NSString *inputFilename = nil;
 	NSString *outputBaseFilename = nil;
 	NSString *outputSuffix = nil;
+	CGFloat *contentScaleFactor = 1.0f;
 	
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
 			{"inputFile",    required_argument, 0, 'i'},
 			{"outputFile",   required_argument, 0, 'o'},
 			{"outputSuffix", required_argument, 0, 's'},
+			{"contentScaleFactor", required_argument, 0, 'f'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
@@ -121,6 +123,12 @@ int main(int argc, char *argv[])
 				outputSuffix = [NSString stringWithCString:optarg encoding: NSUTF8StringEncoding];
 				break;
 				
+			case 'f':
+				contentScaleFactor = [[NSString stringWithCString:optarg encoding: NSUTF8StringEncoding] floatValue];
+				if (!contentScaleFactor)
+					contentScaleFactor = 1.0f;
+				break;
+				
 			case '?':
 				/* getopt_long already printed an error message. */
 				[pool release];
@@ -149,6 +157,7 @@ int main(int argc, char *argv[])
 	tileCutterCore.tileHeight = tileWidth;
 	tileCutterCore.keepAllTiles = (keepAllTiles != 0);
 	tileCutterCore.rigidTiles = (rigidTilesSize != 0);
+	tileCutterCore.contentScaleFactor = contentScaleFactor;
 	
 	// Start Cutting and Wait for it.
 	[tileCutterCore startSavingTiles];
