@@ -112,6 +112,9 @@
 	// Change coordinates & size of all tiles for contentScaleFactor
 	if (self.contentScaleFactor != 1.0f)
 	{
+		// Create new array, that will replace old self.allTilesInfo
+		NSMutableArray *newTilesInfoArray = [NSMutableArray arrayWithCapacity: [self.allTilesInfo count]];
+		
 		for (NSDictionary *tileDict in self.allTilesInfo)
 		{
 			// Get Tile Rect
@@ -129,10 +132,14 @@
 										  NSStringFromRect(rect), @"Rect",
 										  nil];
 			
-			// Replace old Tile Info Dict with New One
-			[(NSMutableArray *)self.allTilesInfo replaceObjectAtIndex:[self.allTilesInfo indexOfObject: tileDict] withObject:newTileDict ];
+			// Add new tile info for new array
+			[newTilesInfoArray addObject:newTileDict ];
 			
 		}
+		
+		// Replace Old Tiles with New
+		self.allTilesInfo = newTilesInfoArray;
+		
 	}
 	
 	// Create Root Dictionary for a PLIST file
