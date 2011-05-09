@@ -26,7 +26,8 @@ where X & Y is tile number\n\
 Output plist file will be: OUTPUT.plist\n\
 If --rigidTilesSize flag is set, then all tiles will have the same size.\n\
 If image isn't divisible by tileSize without a remainder - missing pixels will be added.\n\
-If --keepTransparentTiles flag is set, than absolute transparent tiles will be not skiped.\n");
+If --keepTransparentTiles flag is set, than absolute transparent tiles will be not skiped.\n\
+--contentScaleFactor is used as denominator for tiles & image sizes & positions in plist file.\n");
 	exit(0);
 }
 
