@@ -33,6 +33,7 @@
 @property TileCutterOutputPrefs outputFormat;
 @property (readwrite) BOOL skipTransparentTiles;
 @property (readwrite) BOOL rigidTiles;
+@property (readwrite) BOOL POTTiles;
 
 /* array of tiles info, 
  * each item = NSDictionary {

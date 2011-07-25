@@ -16,6 +16,7 @@
 			queue, allTilesInfo, imageInfo, outputFormat;
 @synthesize rigidTiles;
 @synthesize contentScaleFactor;
+@synthesize POTTiles;
 
 #pragma mark Public Methods
 
@@ -85,6 +86,7 @@
 		op.outputSuffix = self.outputSuffix;
 		op.skipTransparentTiles = (! self.keepAllTiles );
 		op.rigidTiles = self.rigidTiles;
+		op.POTTiles = self.POTTiles;
         [queue addOperation:op];
         [op release];
     }

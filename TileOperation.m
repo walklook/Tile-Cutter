@@ -45,7 +45,7 @@
 @synthesize tilesInfo;
 @synthesize skipTransparentTiles;
 @synthesize outputSuffix;
-@synthesize rigidTiles;
+@synthesize rigidTiles, POTTiles;
 #pragma mark -
 - (void)informDelegateOfError:(NSString *)message
 {

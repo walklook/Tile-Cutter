@@ -17,7 +17,7 @@
 
 void printUsageAndExit()
 {
-	printf("\nUsage: tileCutter [--rigidTilesSize] [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
+	printf("\nUsage: tileCutter [--rigidTilesSize | --roundTileSizeToPOT] [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
 --inputFile INPUT.PNG --outputFile OUTPUT [--outputSuffix SUFFIX]\n\
 HEIGHT & WIDTH should be >= 1\n\
 output tiles file names will be in this format:\n\
@@ -25,6 +25,7 @@ OUTPUT_X_Y-SUFFIX.png,\n\
 where X & Y is tile number\n\
 Output plist file will be: OUTPUT.plist\n\
 If --rigidTilesSize flag is set, then all tiles will have the same size.\n\
+If --roundTileSizeToPOT flag is set, then all tiles will have POT size, and rigidTileSize will be disabled.\n\
 If image isn't divisible by tileSize without a remainder - missing pixels will be added.\n\
 If --keepTransparentTiles flag is set, than absolute transparent tiles will be not skiped.\n\
 --contentScaleFactor is used as denominator for tiles & image sizes & positions in plist file.\n");
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
 	// Options Storage
 	int keepAllTiles = 0;
 	int rigidTilesSize = 0;
+	int roundTileSizeToPOT = 0;
 	NSUInteger tileWidth = 0;
 	NSUInteger tileHeight = 0;
 	NSString *inputFilename = nil;
@@ -82,6 +84,7 @@ int main(int argc, char *argv[])
 			{"skipTransparentTiles",   no_argument,       &keepAllTiles, 0},
 			{"keepTransparentTiles",   no_argument,       &keepAllTiles, 1},
 			{"rigidTilesSize",         no_argument,       &rigidTilesSize, 1},
+			{"roundTileSizeToPOT",     no_argument,       &rigidTilesSize, 0},			
 			/* These options don't set a flag.
 			 We distinguish them by their indices. */
 			{"tileWidth",    required_argument, 0, 'w'},
@@ -178,6 +181,10 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 	
+	// Round To POT must disable rigidTileSize.
+	if (roundTileSizeToPOT)
+		rigidTilesSize = 0;
+	
 	// Prepare Tile Cutter
 	TileCutterCore *tileCutterCore = [TileCutterCore new];
 	tileCutterCore.inputFilename = inputFilename;
@@ -187,6 +194,7 @@ int main(int argc, char *argv[])
 	tileCutterCore.tileHeight = tileWidth;
 	tileCutterCore.keepAllTiles = (keepAllTiles != 0);
 	tileCutterCore.rigidTiles = (rigidTilesSize != 0);
+	tileCutterCore.POTTiles = (roundTileSizeToPOT != 0);
 	tileCutterCore.contentScaleFactor = contentScaleFactor;
 	
 	// Start Cutting and Wait for it.

@@ -15,7 +15,7 @@
 						   column:(NSUInteger)column 
 							  row:(NSUInteger)row
 {
-	return [self subImageWithTileWidth:tileWidth tileHeight:tileHeight column: column row:row rigidSize: NO];
+	return [self subImageWithTileWidth:tileWidth tileHeight:tileHeight column: column row:row rigidSize: NO POTSize: NO];
 }
 
 -(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth 
@@ -23,6 +23,16 @@
 						   column:(NSUInteger)column 
 							  row:(NSUInteger)row
 						rigidSize:(BOOL) rigid
+{
+	return [self subImageWithTileWidth:tileWidth tileHeight:tileHeight column: column row:row rigidSize: NO POTSize: NO];
+}
+
+-(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth 
+					   tileHeight:(CGFloat)tileHeight 
+						   column:(NSUInteger)column 
+							  row:(NSUInteger)row
+						rigidSize:(BOOL) rigid
+						  POTSize:(BOOL) potSize
 {
     int width = [self pixelsWide];
     int height = [self pixelsHigh];
@@ -41,6 +51,9 @@
     {
         lastCol = width;
         outputWidth = (width - theCol);
+		
+		if (potSize)
+			outputWidth = (int)pow( 2, ceil(log2((double)outputWidth)));
     }
     else
     {
@@ -53,7 +66,9 @@
     {
         lastRow = height;
         outputHeight = (height - theRow);
-        
+		
+		if (potSize)
+			outputHeight = (int)pow( 2, ceil(log2((double)outputHeight)));        
     }
     else
     {

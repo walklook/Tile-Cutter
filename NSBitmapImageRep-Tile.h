@@ -24,6 +24,19 @@
 							  row:(NSUInteger)row
 						rigidSize:(BOOL) rigid;
 
+/** Designated method.
+ *
+ * @param potSize If YES - tile width & height will be rounded to nearest POT value, larger then existing. 
+ * potSize have no effect if rigidSize is YES.
+ *
+ */
+-(NSImage *)subImageWithTileWidth:(CGFloat)tileWidth 
+					   tileHeight:(CGFloat)tileHeight 
+						   column:(NSUInteger)column 
+							  row:(NSUInteger)row
+						rigidSize:(BOOL) rigid
+						  POTSize:(BOOL) potSize;
+
 -(NSUInteger)columnsWithTileWidth:(CGFloat)tileWidth;
 -(NSUInteger)rowsWithTileHeight:(CGFloat)tileHeight;
 
