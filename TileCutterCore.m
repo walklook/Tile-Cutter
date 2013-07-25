@@ -12,8 +12,9 @@
 @implementation TileCutterCore
 
 @synthesize keepAllTiles, tileWidth, tileHeight, inputFilename, 
-			outputBaseFilename, outputSuffix, operationsDelegate, 
-			queue, allTilesInfo, imageInfo, outputFormat;
+			outputBaseFilename, outputSuffix, operationsDelegate,
+            queue, allTilesInfo, imageInfo, outputFormat,
+            progressCol, progressRow, tileRowCount, tileColCount;
 @synthesize rigidTiles;
 @synthesize contentScaleFactor;
 @synthesize POTTiles;
@@ -57,8 +58,13 @@
     progressCol = 0;
     progressRow = 0;
     
-    tileRowCount = [image rowsWithTileHeight: self.tileHeight];
-    tileColCount = [image columnsWithTileWidth: self.tileWidth];
+    //tileRowCount = [image rowsWithTileHeight: self.tileHeight];
+    //tileColCount = [image columnsWithTileWidth: self.tileWidth];
+    
+    NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
+    //NSLog( @"height = %d", rep.pixelsHigh );
+    tileRowCount = (NSUInteger) ceilf( (float)rep.pixelsHigh / self.tileHeight );
+    tileColCount = (NSUInteger) ceilf( (float)rep.pixelsWide / self.tileWidth );
 	
 	NSSize outputImageSizeForPlist = [image size];
 	outputImageSizeForPlist.width /= self.contentScaleFactor;

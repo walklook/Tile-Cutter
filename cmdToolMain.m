@@ -18,10 +18,10 @@
 void printUsageAndExit()
 {
 	printf("\nUsage: tileCutter [--rigidTilesSize | --roundTileSizeToPOT] [--keepTransparentTiles] --tileWidth WIDTH --tileHeight HEIGHT \
---inputFile INPUT.PNG --outputFile OUTPUT [--outputSuffix SUFFIX]\n\
+--inputFile INPUT.PNG --outputFile OUTPUT [--outputSuffix SUFFIX] [--outputExtension EXTENSION]\n\
 HEIGHT & WIDTH should be >= 1\n\
 output tiles file names will be in this format:\n\
-OUTPUT_X_Y-SUFFIX.png,\n\
+OUTPUT_X_Y-SUFFIX.EXTENSION,\n\
 where X & Y is tile number\n\
 Output plist file will be: OUTPUT.plist\n\
 If --rigidTilesSize flag is set, then all tiles will have the same size.\n\
@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
 	NSString *inputFilename = nil;
 	NSString *outputBaseFilename = nil;
 	NSString *outputSuffix = nil;
+    NSString *outputExtension = nil;
 	float_t contentScaleFactor = 1.0f;
 	
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
@@ -92,13 +93,14 @@ int main(int argc, char *argv[])
 			{"inputFile",    required_argument, 0, 'i'},
 			{"outputFile",   required_argument, 0, 'o'},
 			{"outputSuffix", required_argument, 0, 's'},
+            {"outputExtension", required_argument, 0, 'e'},
 			{"contentScaleFactor", required_argument, 0, 'f'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 		
-		c = getopt_long (argc, argv, "w:h:i:o:s:",
+		c = getopt_long (argc, argv, "w:h:i:o:s:e:",
 						 long_options, &option_index);
 		
 		/* Detect the end of the options. */
@@ -147,6 +149,10 @@ int main(int argc, char *argv[])
 			case 's':
 				outputSuffix = [NSString stringWithCString:optarg encoding: NSUTF8StringEncoding];
 				break;
+                
+            case 'e':
+                outputExtension = [NSString stringWithCString:optarg encoding:NSUTF8StringEncoding];
+                break;
 				
 			case 'f':
 				contentScaleFactor = [[NSString stringWithCString:optarg encoding: NSUTF8StringEncoding] floatValue];
@@ -190,8 +196,22 @@ int main(int argc, char *argv[])
 	tileCutterCore.inputFilename = inputFilename;
 	tileCutterCore.outputBaseFilename = outputBaseFilename;
 	tileCutterCore.outputSuffix = outputSuffix;
+    if ( [outputExtension isEqualToString:@"jpg"] )
+    {
+        tileCutterCore.outputFormat = TileCutterOutputPrefsJPEG;//outputExtension;
+    }
+    else if ( [outputExtension isEqualToString:@"png"] )
+    {
+        tileCutterCore.outputFormat = TileCutterOutputPrefsPNG;
+    }
+    else
+    {
+        printf("\nthe image format is not supported now. you can touch me to support it. \n");
+        [pool release];
+		exit(0);
+    }
 	tileCutterCore.tileWidth = tileWidth;
-	tileCutterCore.tileHeight = tileWidth;
+	tileCutterCore.tileHeight = tileHeight;
 	tileCutterCore.keepAllTiles = (keepAllTiles != 0);
 	tileCutterCore.rigidTiles = (rigidTilesSize != 0);
 	tileCutterCore.POTTiles = (roundTileSizeToPOT != 0);
