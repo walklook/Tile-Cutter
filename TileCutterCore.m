@@ -66,12 +66,16 @@
     tileRowCount = (NSUInteger) ceilf( (float)rep.pixelsHigh / self.tileHeight );
     tileColCount = (NSUInteger) ceilf( (float)rep.pixelsWide / self.tileWidth );
 	
-	NSSize outputImageSizeForPlist = [image size];
+	NSSize outputImageSizeForPlist = NSMakeSize( rep.pixelsWide, rep.pixelsHigh );// [image size];
 	outputImageSizeForPlist.width /= self.contentScaleFactor;
 	outputImageSizeForPlist.height /= self.contentScaleFactor;
 	self.imageInfo = [NSDictionary dictionaryWithObjectsAndKeys: 
 					  [self.inputFilename lastPathComponent], @"Filename",
-					  NSStringFromSize(outputImageSizeForPlist), @"Size", nil];
+					  NSStringFromSize(outputImageSizeForPlist), @"Size",
+                      [[NSNumber numberWithInt:tileRowCount] stringValue], @"Row",
+                      [[NSNumber numberWithInt:tileColCount] stringValue], @"Column",
+                      NSStringFromSize( NSMakeSize( self.tileWidth, self.tileHeight ) ), @"TileSize",
+                      nil];
 	
 	self.allTilesInfo = [NSMutableArray arrayWithCapacity: tileRowCount * tileColCount];
     
